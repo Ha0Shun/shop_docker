@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="cart shopping">
+    <div class="container">
+      <div class="product-list">
+        <form method="post">
+          {% csrf_token %}
+          <div class="table-responsive mt-2">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>商品圖片</th>
+                  <th>商品名稱</th>
+                  <th>尺寸</th>
+                  <th>單價</th>
+                  <th>數量</th>
+                  <th>總計</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for productoption_id, product in product_dict.items %}
+                <tr class="product-row">
+                  <td class="product-image">
+                    <div class="product-info d-flex flex-wrap align-items-center">
+                      {% if product.product.product_image_set.all %}
+                      {% if product.product.product_image_set.all.0.image %}
+                      <a href="{% url 'products:detail' product.product.id %}">
+                        <img class="w-100 img-fluid" src="{{ product.product.product_image_set.all.0.image.url }}" alt="" style="max-width: 100%; height: auto;" />
+                      </a>
+                      {% endif %}
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td class="product-name product-info">
+                    <a href="{% url 'products:detail' product.product.id %}">{{ product.product.name }}</a>
+                  </td>
+                  <td class="product-size">{{ product.size }}</td>
+                  <td class="product-price">${{ product.price }}</td>
+                  <td>
+                      <div class="quantity-control d-flex align-items-center">
+                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantityAndUpdateCart('{{ productoption_id|stringformat:'s' }}', -1)">-</button>
+                        <!-- 使用 span 顯示數量 -->
+                        <span id="quantity_{{ productoption_id|stringformat:'s' }}" class="mx-2">{{ product.count }}</span>
+                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantityAndUpdateCart('{{ productoption_id|stringformat:'s' }}', 1)">+</button>
+                      </div>
+                  </td>
+                  <td class="product-total">${{ product.total_price }}</td>
+                  <td class="product-remove large-one">
+                    <a href="javascript:void(0)"
+                      onclick="removeFromCartAndCheckRedirect('{% url 'orders:delete_cart' productoption_id|stringformat:'s' %}', '已移除商品', 'true');"
+                      class="btn btn-danger product-remove ">移除</a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center">您的購物車是空的</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="summary-prices"></ul>
+
+          <div class="summary-total d-flex justify-content-between">
+            <span>總金額</span>
+            <span id="total-amount">${{ total }}</span>
+          </div>
+
+          {% if not product_dict %}
+          <div class="checkbtn d-none">
+            <button type="submit" class="btn btn-secondary btn-main pull-right my-3">更新購物車</button>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-main pull-right my-3" style="margin-right: 10px;">結帳</a>
+          </div>
+          {% else %}
+          <div class="checkbtn">
+            <button type="submit" class="btn btn-secondary btn-main pull-right my-3">更新購物車</button>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-main pull-right my-3" style="margin-right: 10px;">結帳</a>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  // 获取指定名称的 cookie 值
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // 更新數量並更新購物車
+    function updateQuantityAndUpdateCart(productoption_id, change) {
+        var quantityElement = document.querySelector('#quantity_' + productoption_id);
+        var currentQuantity = parseInt(quantityElement.innerText);  // 取得當前顯示的數量
+        var newQuantity = currentQuantity + change;
+    
+        if (newQuantity >= 1) {
+            quantityElement.innerText = newQuantity;  // 更新顯示的數量
+    
+            // 使用 GET 請求來更新購物車
+            var url = '/orders/update-cart/' + productoption_id + '/' + newQuantity + '/';
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    // 如果更新成功，更新頁面（例如更新總金額等）
+                    location.reload();  // 重新載入頁面
+                } else {
+                    alert('更新購物車失敗: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('錯誤:', error);
+                alert('更新購物車時出現錯誤');
+            });
+        }
+    }
+
+  // 更新購物車視圖
+  function updateCartView(cart) {
+    var totalAmount = 0;
+    // 遍歷每個商品並更新頁面元素
+    Object.keys(cart).forEach(function(productoption_id) {
+      var item = cart[productoption_id];
+      var itemTotal = item.count * item.price;
+      totalAmount += itemTotal;
+
+      // 更新數量
+      document.querySelector('#quantity_' + productoption_id).value = item.count;
+
+      // 更新每個商品的總價
+      document.querySelector('#total_' + productoption_id).innerText = "$" + itemTotal.toFixed(2);
+    });
+
+    // 更新總金額
+    document.querySelector('#total-amount').innerText = "$" + totalAmount.toFixed(2);
+  }
+    // 移除購物車商品並檢查重定向
+    function removeFromCartAndCheckRedirect(url, successMessage, reloadPage) {
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                alert(successMessage);  // 顯示成功訊息
+                if (reloadPage === 'true') {
+                    location.reload();  // 重新載入頁面
+                }
+            } else {
+                alert('移除商品失敗: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('錯誤:', error);
+            alert('移除商品時出現錯誤');
+        });
+    }
+    
+</script>
+
+{% endblock content %}

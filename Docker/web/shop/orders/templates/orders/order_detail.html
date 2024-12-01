@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">訂單詳細資料</h1>
+    <div class="mb-4">
+        <h2 class="text-center mb-3">商品內容</h2>
+        <button id="toggleButton" class="btn btn-primary mb-3 d-block mx-auto">
+            <i id="arrowIcon" class="fas fa-chevron-up"></i>
+        </button>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" id="orderTable">
+                <thead>
+                    <tr>
+                        <th>圖片</th>
+                        <th>名稱</th>
+                        <th>尺寸</th>
+                        <th>單價</th>
+                        <th>數量</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in relational_products %}
+                    <tr>
+                        <td>
+                            {% if product.product.product_image_set.all %}
+                            <a href="{% url 'products:detail' product.product.id %}">
+                                <img src="{{ product.product.product_image_set.first.image.url }}"
+                                    alt="{{ product.product.name }}" width="50">
+                                {% else %}
+                                <img src="{% static 'default_image.png' %}" alt="Default Image" width="50">
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td class="product-name product-info">
+                            <a href="{% url 'products:detail' product.product.id %}">{{ product.product.name }}</a>
+                        </td>
+                        <td>{{ product.product_option.size }}</td>
+                        <td>${{ product.product_option.price|floatformat:0 }}</td>
+                        <td>{{ product.number }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <h2 class="text-center mb-3">訂單資訊</h2>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <td><strong>訂單編號:</strong></td>
+                        <td>{{ order.order_id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>姓名:</strong></td>
+                        <td>{{ order.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>信箱:</strong></td>
+                        <td>{{ order.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>總計:</strong></td>
+                        <td>${{ order.total }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>訂單狀態:</strong></td>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>完成時間:</strong></td>
+                        <td>{{ order.modified }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="text-center">
+        <a href="javascript:history.back()" class="btn btn-secondary" style="max-width: 200px;">返回查詢</a>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('toggleButton').addEventListener('click', function() {
+        var table = document.getElementById('orderTable');
+        var arrowIcon = document.getElementById('arrowIcon');
+        
+        // 統一檢查 table 的初始顯示狀態
+        if (table.style.display === 'none') {
+            table.style.display = 'table';  // 顯示表格
+            arrowIcon.classList.remove('fa-chevron-down');  // 移除向下箭頭
+            arrowIcon.classList.add('fa-chevron-up');       // 顯示向上箭頭            
+        } else {
+            table.style.display = 'none';  // 隱藏表格
+            arrowIcon.classList.remove('fa-chevron-up');  // 移除向上箭頭
+            arrowIcon.classList.add('fa-chevron-down');   // 顯示向下箭頭
+        }
+    });
+
+    // 確保初始狀態正確，防止瀏覽器的默認樣式干擾
+    document.addEventListener('DOMContentLoaded', function() {
+        var table = document.getElementById('orderTable');
+        var arrowIcon = document.getElementById('arrowIcon');
+
+        table.style.display = 'table';  // 初始展開
+        arrowIcon.classList.remove('fa-chevron-down');  // 確保箭頭正確
+        arrowIcon.classList.add('fa-chevron-up');
+    });
+</script>
+
+{% endblock %}
