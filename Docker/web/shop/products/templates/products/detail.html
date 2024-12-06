@@ -56,11 +56,9 @@
                             </div>
                             {% endfor %}
                         </div>
-                        <button class="btn btn-dark position-absolute end-0 top-50 translate-middle-y shadow" id="scrollRight"
-                            style="z-index: 1;width: 20px; height: 95%; display: flex; align-items: center; justify-content: center; border-radius: 0; opacity: 0.5; border: 1px solid #6c757d; transition: opacity 0.3s, background-color 0.3s;">
+                        <button class="btn btn-dark position-absolute end-0 top-50 translate-middle-y shadow"id="scrollRight"style="z-index: 1;width: 20px; height: 95%; display: flex; align-items: center; justify-content: center; border-radius: 0; opacity: 0.5; border: 1px solid #6c757d; transition: opacity 0.3s, background-color 0.3s;">
                             <span style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"
-                                    fill="white" style="filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.8));">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="white" style="filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.8));">
                                     <path d="M8.72 5.22a.75.75 0 0 1 0 1.06L14.44 12l-5.72 5.72a.749.749 0 0 1 .326 1.275.749.749 0 0 1 .734-.215l6.25-6.25a.75.75 0 0 1 0-1.06l-6.25-6.25a.75.75 0 0 1-1.06 0Z"></path>
                                 </svg>
                             </span>
@@ -88,11 +86,13 @@
                     <span class="fw-bold">數量:</span>
                     <div class="input-group w-auto">
                         <button class="btn btn-outline-dark" type="button" id="decrement">-</button>
-                        <input type="number" id="product-quantity" class="form-control text-center" value="1" min="1">
+                        <input type="number" id="product-quantity" class="form-control text-center" value="1" min="1" readonly>
                         <button class="btn btn-outline-dark" type="button" id="increment">+</button>
                     </div>
                 </div>
-                <p class="product-price mt-3 fs-4 text-dark" id="product-price">${{ item.productoption_set.first.price}}</p>
+                <p class="product-price mt-3 fs-4 text-dark" id="product-price">
+                    ${{ item.productoption_set.first.price }}
+                </p>
                 <div class="product-category mt-3">
                     <span class="fw-bold">商品分類:</span>
                     <ul class="list-unstyled">
@@ -137,7 +137,6 @@
         </div>
     </div>
 </section>
-<!-- Modal 結構 -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -147,11 +146,9 @@
             </div>
             <div class="modal-body">
                 <div class="text-center">
-                    <!-- 主圖片 -->
                     <img id="modalImage" src="" alt="Preview Image" class="img-fluid rounded shadow">
                 </div>
                 <div class="mt-3 d-flex flex-wrap justify-content-center gap-2">
-                    <!-- 縮略圖區域 -->
                     {% for product_image in item.product_image_set.all %}
                     <img src="{{ product_image.image.url }}" class="modal-thumbnail img-thumbnail"
                         onclick="updateModalImage('{{ product_image.image.url }}')"
@@ -162,135 +159,5 @@
         </div>
     </div>
 </div>
-
-
-
-<script>    
-
-    document.getElementById('toggleButton').addEventListener('click', function() {
-        var content = document.getElementById('collapseContent');
-        var buttonText = document.getElementById('toggleButtonText');        
-        if (content.style.maxHeight === '200px') {
-            content.style.maxHeight = 'none';  
-            buttonText.textContent = '▲ 收起';  
-        } else {
-            content.style.maxHeight = '200px';  
-            buttonText.textContent = '▼ 展開';  
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const carousel = document.getElementById('carouselExample');
-        const thumbnails = document.querySelectorAll('.thumbnail');
-        
-        carousel.addEventListener('slid.bs.carousel', function (event) {            
-            const activeIndex = event.to;            
-            thumbnails.forEach(thumb => thumb.classList.remove('border-primary'));            
-            thumbnails[activeIndex].classList.add('border-primary');
-        });        
-        thumbnails[0].classList.add('border-primary');
-    });    
-    document.getElementById('increment').addEventListener('click', function() {
-        var quantityInput = document.getElementById('product-quantity');
-        quantityInput.value = parseInt(quantityInput.value) + 1;
-    });
-    document.getElementById('decrement').addEventListener('click', function() {
-        var quantityInput = document.getElementById('product-quantity');
-        if (parseInt(quantityInput.value) > 1) {
-            quantityInput.value = parseInt(quantityInput.value) - 1;
-        }
-    });    
-        // 默认显示基础价格
-    var defaultPrice = document.querySelector('input[name="options"]:checked').getAttribute('data-price');
-    document.getElementById('product-price').innerText = '$' + defaultPrice;
-
-    // 更新尺寸选择时的价格显示
-    document.querySelectorAll('input[name="options"]').forEach(function(option) {
-        option.addEventListener('change', function() {
-            var price = this.getAttribute('data-price');
-            document.getElementById('product-price').innerText = '$' + price;
-        });
-    });
-
-    // 獲取滾動容器和按鈕
-    const thumbnails = document.getElementById('thumbnails');
-    const scrollLeft = document.getElementById('scrollLeft');
-    const scrollRight = document.getElementById('scrollRight');
-
-    // 左箭頭按下事件
-    scrollLeft.addEventListener('click', () => {
-        thumbnails.scrollBy({ left: -100, behavior: 'smooth' });
-    });
-
-    // 右箭頭按下事件
-    scrollRight.addEventListener('click', () => {
-        thumbnails.scrollBy({ left: 100, behavior: 'smooth' });
-    });
-
-
-    function addToCart(productId) {
-        // 获取尺寸ID
-        var selectedOption = document.querySelector('input[name="options"]:checked');
-        if (!selectedOption) {
-            alert('請選擇一個尺寸。');
-            return;
-        }
-        var sizeId = selectedOption.value;
-
-        // 获取数量
-        var quantityInput = document.getElementById('product-quantity');
-        var quantity = parseInt(quantityInput.value);
-        if (isNaN(quantity) || quantity < 1) {
-            alert('請輸入有效的數量。');
-            return;
-        }
-
-        // 构建URL
-        var url = "/orders/add_cart/" + productId + "/" + sizeId + "/" + quantity + "/";
-
-        // 使用Ajax发送请求
-        getAjax(url, '已加入購物車', 'false');
-    }    
-    function showImageModal(imageUrl, index) {
-        // 更新主圖片
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = imageUrl;
-    
-        // 顯示 Modal
-        const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
-        imageModal.show();
-    
-        // 等待 Modal 顯示後，再選擇並高亮當前的縮略圖
-        const thumbnails = document.querySelectorAll('.modal-thumbnail');
-        
-        // 先移除所有縮略圖的高亮
-        thumbnails.forEach(thumb => thumb.classList.remove('border-primary'));
-    
-        // 根據圖片 URL 找到對應的縮略圖並添加高亮
-        const selectedThumbnail = Array.from(thumbnails).find(thumb => thumb.src.includes(imageUrl));
-        if (selectedThumbnail) {
-            selectedThumbnail.classList.add('border-primary'); // 高亮當前縮略圖
-        }
-    }
-    
-    function updateModalImage(imageUrl) {
-        // 更新主圖片
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = imageUrl;
-    
-        // 高亮對應的縮略圖
-        const thumbnails = document.querySelectorAll('.modal-thumbnail');
-        thumbnails.forEach(thumb => thumb.classList.remove('border-primary'));
-    
-        // 找到對應的縮略圖並添加高亮邊框
-        const selectedThumbnail = Array.from(thumbnails).find(thumb => thumb.src.includes(imageUrl));
-        if (selectedThumbnail) {
-            selectedThumbnail.classList.add('border-primary');
-        }
-    }
-
-
-
-</script>
-
+<script src="{% static 'products/js/content-js/detail.js' %}"></script>
 {% endblock content %}

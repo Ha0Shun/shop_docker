@@ -83,11 +83,11 @@ WSGI_APPLICATION = "shop.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'NAME': 'shop',
+        'USER': 'hao',
+        'PASSWORD': 'ff4319',
+        'HOST': 'hao-test.ddns.net',
+        'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',
             'use_unicode': True,

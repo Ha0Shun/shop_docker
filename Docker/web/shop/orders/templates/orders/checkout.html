@@ -60,7 +60,7 @@
                      <h4 class="widget-title text-center mb-4 text-primary">訂單內容</h4>
                      <div class="summary-total d-flex justify-content-between align-items-center">
                         <span class="align-items-center">總金額</span>
-                        <span class="align-items-center" id="total-price">${{ total }}</span>
+                        <span class="align-items-center" id="total-price">${{ total|floatformat:0 }}</span>
                      </div>
                      {% for product_id, product in product_dict.items %}
                      <div class="media product-card border rounded p-2 mb-1">
@@ -79,7 +79,7 @@
                                     <a href="{% url 'products:detail' product.product.id %}">{{ product.product.name}}</a>
                                  </p>
                                  <p class="size text-muted ps-2">{{ product.product.size }}</p>
-                                 <p class="price ps-2"><strong class="product-price">{{ product.count }} x ${{ product.product.price }}</strong></p>
+                                 <p class="price ps-2"><strong class="product-price">{{ product.count }} x ${{ product.product.price|floatformat:0 }}</strong></p>
                               </div>
                            </div>
                         </div>

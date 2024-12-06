@@ -6,7 +6,6 @@
     <div class="container-fulid sidebar sticky-top">
         <div class="category-sidebar">                    
             <ul class="category-list sidebar-item d-flex flex-wrap justify-content-center py-3">
-                <!-- 新增 "所有商品" 的選項 -->
                 <li>
                     <a href="{% url 'products:list' %}">所有商品</a>
                 </li>
@@ -19,20 +18,15 @@
         </div>
     </div> 
     <div class="container"> 
-        <div class="row">                   
-            <!-- 商品顯示區域 -->
+        <div class="row">                 
             <div class="col-md-12 col-12">
-                <!-- 圖片輪播區域 -->
                 <div id="imageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-                    <!-- 輪播指示器 -->
                     <ol class="carousel-indicators">
                         {% for image in carousel_images %}
                             <li data-bs-target="#imageCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
                                 class="{% if forloop.first %}active{% endif %}"></li>
                         {% endfor %}
                     </ol>
-                
-                    <!-- 輪播圖片內容 -->
                     <div class="carousel-inner pt-3">
                         {% for image in carousel_images %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -43,22 +37,19 @@
                             </div>
                         {% endfor %}
                     </div>
-                
-                    <!-- 左右導航 -->
-                    <a class="carousel-control-prev" href="#imageCarousel" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">上一張</span>
+                    <a class="carousel-control-prev custom-control-prev" href="#imageCarousel" role="button" data-bs-slide="prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                            <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                        </svg>
                     </a>
-                    <a class="carousel-control-next" href="#imageCarousel" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">下一張</span>
+                    <a class="carousel-control-next custom-control-next" href="#imageCarousel" role="button" data-bs-slide="next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                            <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                          </svg>
                     </a>
                 </div>
-
-                <!-- 商品清單 -->
                 {% for category, items in category_items.items %}
                     <h3>{{ category.name }}
-                        <!-- 查看更多按鈕 -->
                         <a href="{% url 'products:list' %}?category={{ category.id }}" class="btn btn-secondary btn-sm ms-3">查看更多</a>
                     </h3>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
@@ -74,7 +65,7 @@
                                     </div>
                                     <div class="product-content border-top mt-2 p-1">
                                         <h4><a href="{% url 'products:detail' item.id %}">{{ item.name }}</a></h4>
-                                        <p class="product-price">${{ item.lowest_price }}</p>
+                                        <p class="product-price">${{ item.lowest_price|floatformat:0 }}</p>
                                     </div>
                                 </div>
                             </div>

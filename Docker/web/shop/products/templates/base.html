@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'products/css/style.css' %}">   
     <link rel="stylesheet" href="{% static 'products/css/detail.css' %}"> 
     <link rel="stylesheet" href="{% static 'products/css/bootstrap-reboot.css' %}">
+    <script src="{% static 'products/js/content-js/base.js' %}"></script>  
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'products/images/測試.png' %}">
     <!-- Themefisher Icon font -->
@@ -72,7 +73,7 @@
     <footer class="container-fluid bg-dark text-white pt-2">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-6 mb-4 mb-md-0 border-end border-light p-3">
+                <div class="col-md-6 mb-4 mb-md-0 p-3">
                     <p class="mb-0">
                         <strong>&copy;2024 邢皓翔購物網站測試</strong><br>
                         <span>聯絡方式:
@@ -98,68 +99,5 @@
             </div>
         </div>
     </footer>
-    
-
-    <script>
-        function getAjax(url, msg, reload) {
-            $.get(url, function (data, status) {
-                Swal.fire({
-                    icon: 'success',
-                    title: msg,
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then((result) => {
-                    if (reload == 'true') {
-                        location.reload()
-                    }
-                })
-            });
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            // 處理所有價格元素（每個商品的價格和總金額）
-            const priceElements = document.querySelectorAll('.product-price, #total-price'); 
-    
-            priceElements.forEach(function(priceElement) {
-                let priceText = priceElement.innerText.trim();
-    
-                // 只處理價格部分，確保不影響商品數量（如1 x $2311）
-                let priceMatch = priceText.match(/\$(\d+(\.\d+)?)/);
-    
-                if (priceMatch) {
-                    // 解析價格並去除小數點
-                    let price = parseFloat(priceMatch[0].replace('$', '').trim());  // 取得價格並轉換為浮動數字
-                    price = Math.floor(price);  // 向下取整
-    
-                    // 用更新過的價格替換原來的價格部分，保持其他文本（如數量）不變
-                    priceText = priceText.replace(priceMatch[0], `$${price}`);
-                    priceElement.innerText = priceText;  // 更新價格顯示
-                }
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            // 處理包含總價格的元素
-            const priceElements = document.querySelectorAll('.product-total'); 
-    
-            priceElements.forEach(function(priceElement) {
-                // 取得價格文本（例如：$1611.0）
-                let priceText = priceElement.innerText;
-    
-                // 找到 "$" 之後的價格部分
-                let priceMatch = priceText.match(/\$(\d+(\.\d+)?)/);
-    
-                if (priceMatch) {
-                    // 解析價格並去除小數點
-                    let price = parseFloat(priceMatch[0].replace('$', '').trim());  // 取得價格並轉換為浮動數字
-                    price = Math.floor(price);  // 向下取整
-    
-                    // 將更新後的價格重新插入原來的位置
-                    priceText = priceText.replace(priceMatch[0], `$${price}`);
-                    priceElement.innerText = priceText;
-                }
-            });
-        });
-        
-    </script>
-
 </body>
 </html>

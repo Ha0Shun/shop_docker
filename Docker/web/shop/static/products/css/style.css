@@ -19,7 +19,6 @@ body {
     text-decoration-line: none;
     padding: 5px;
     color: black;
-    margin-left: 3px;
 }
 .category-list a:hover{
     background: black;
@@ -95,9 +94,6 @@ body {
 .carousel-control-next {
     top: 50px;
 }
-.little-one {
-    display: none;
-}
 #thumbnails {
     overflow-x: auto;
     overflow-y: hidden; 
@@ -162,8 +158,6 @@ body {
         font-size: 1.1rem;
         font-weight: bold;
     }
-    .product-size,
-    .product-quantity,
     .product-total {
         display: none;
     }
@@ -183,6 +177,19 @@ body {
     }
     .checkbtn {
         text-align: center;
+    }
+    .btn-outline-secondary {
+        max-width: 40px;
+        font-size: 30px;
+        padding: 2px 6px;
+    }
+    .quantity-control .btn-outline-secondary {
+        margin: 0 5px;  /* 左右按鈕間隔 */
+    }
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;  /* 設定按鈕和數量之間的間隔 */
     }
   
 }
