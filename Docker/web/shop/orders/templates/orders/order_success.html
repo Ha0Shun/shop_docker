@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<section class="page-wrapper success-msg py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="block text-center p-4 border rounded shadow-sm bg-light">
+          <i class="tf-ion-android-checkmark-circle display-3 text-success mb-4"></i>          
+          <h2 class="text-success mb-4">付款成功</h2>
+          <p class="mb-4 text-muted">您的支付已成功處理。感謝您的購買！</p>
+          <a href="{% url 'products:home' %}" class="btn btn-secondary btn-main  btn-block btn-lg">繼續購物</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

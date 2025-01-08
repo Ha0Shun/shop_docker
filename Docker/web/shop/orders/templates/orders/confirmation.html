@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<section class="page-wrapper success-msg py-5">
+  <div class="container">    
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center">
+        <i class="tf-ion-android-checkmark-circle display-1 text-success mb-4"></i>
+        <h2 class="h4 text-success mb-3">訂單已建立完成，請立即前往付款</h2>       
+        <form method="post" action="{% url 'orders:ecpay' %}">
+          {% csrf_token %}
+          <input type="hidden" name="order_id" value="{{ order_id }}" />         
+          <button type="submit" class="btn btn-success btn-lg px-4 py-2">前往付款</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="cart shopping">
+    <div class="container">
+      <div class="product-list">
+        <form method="post">
+          {% csrf_token %}
+          <div class="table-responsive mt-2">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>商品圖片</th>
+                  <th>商品名稱</th>
+                  <th>尺寸</th>
+                  <th>單價</th>
+                  <th>數量</th>
+                  <th>總計</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for productoption_id, product in product_dict.items %}
+                <tr class="product-row">
+                  <td class="product-image">
+                    <div class="product-info d-flex flex-wrap align-items-center">
+                      {% if product.product.product_image_set.all %}
+                      {% if product.product.product_image_set.all.0.image %}
+                      <a href="{% url 'products:detail' product.product.id %}">
+                        <img class="w-100 img-fluid" src="{{ product.product.product_image_set.all.0.image.url }}" alt="" style="max-width: 100%; height: auto;" />
+                      </a>
+                      {% endif %}
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td class="product-name product-info">
+                    <a href="{% url 'products:detail' product.product.id %}">{{ product.product.name }}</a>
+                  </td>
+                  <td class="product-size">{{ product.size }}</td>
+                  <td class="product-price">${{ product.price|floatformat:0 }}</td>
+                  <td>
+                      <div class="quantity-control d-flex align-items-center">
+                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantityAndUpdateCart('{{ productoption_id|stringformat:'s' }}', -1)">-</button>
+                        <span id="quantity_{{ productoption_id|stringformat:'s' }}" class="mx-2">{{ product.count }}</span>
+                        <button type="button" class="btn btn-outline-secondary" onclick="updateQuantityAndUpdateCart('{{ productoption_id|stringformat:'s' }}', 1)">+</button>
+                      </div>
+                  </td>
+                  <td class="product-total">
+                    <div class="total-content d-flex justify-content-between">  
+                      <div class="total-price">${{ product.total_price|floatformat:0 }}</div>
+                      <a href="javascript:void(0)"onclick="removeFromCartAndCheckRedirect('{% url 'orders:delete_cart' productoption_id|stringformat:'s' %}', '已移除商品', 'true');" class="btn btn-danger product-remove d-md-none">移除</a>
+                    </div>
+                  </td> 
+                  <td class="product-remove large-one">
+                    <a href="javascript:void(0)"
+                      onclick="removeFromCartAndCheckRedirect('{% url 'orders:delete_cart' productoption_id|stringformat:'s' %}', '已移除商品', 'true');"
+                      class="btn btn-danger product-remove ">移除</a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center">您的購物車是空的</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="summary-prices"></ul>
+
+          <div class="summary-total d-flex">
+            <span>總金額:</span>
+            <span id="total-amount">${{ total }}</span>
+          </div>
+
+          {% if not product_dict %}
+          <div class="checkbtn d-none">
+            <button type="submit" class="btn btn-secondary btn-main pull-right my-3">更新購物車</button>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-main pull-right my-3" style="margin-right: 10px;">結帳</a>
+          </div>
+          {% else %}
+          <div class="checkbtn">
+            <button type="submit" class="btn btn-secondary btn-main pull-right my-3">更新購物車</button>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-main pull-right my-3" style="margin-right: 10px;">結帳</a>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'products/js/content-js/cart.js' %}"></script>
+{% endblock content %}

@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./web
+    container_name: shop_web
+    restart: always
+    command: ["/web/venv/bin/uwsgi", "--ini", "/web/shop/uwsgi.ini"]
+    volumes:
+        - web_data:/web/shop
+    environment:
+        - PYTHONUNBUFFERED=TRUE
+    ports:
+      - "8080:8000"  # web 容器仍然暴露 8000 端口
+
+  nginx:
+    build: ./nginx
+    container_name: shop_nginx
+    restart: always
+    volumes:
+        - web_data:/web/shop
+        - ./nginx/logs:/var/log/nginx
+        - /etc/letsencrypt:/etc/letsencrypt  # 確保此處正確掛載
+    ports:
+        - "0.0.0.0:80:80"
+        - "0.0.0.0:443:443"
+    depends_on:
+        - web
+
+
+volumes:
+  pg_data:
+  web_data:

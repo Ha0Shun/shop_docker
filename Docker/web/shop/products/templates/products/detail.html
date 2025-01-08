@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="container-fulid sidebar sticky-top">
+    <div class="category-sidebar">
+        <ul class="category-list sidebar-item d-flex flex-wrap justify-content-center py-3">
+            <li>
+                <a href="{% url 'products:list' %}">所有商品</a>
+            </li>
+            {% for category in categories %}
+            <li>
+                <a href="{% url 'products:list' %}?category={{ category.id }}">{{ category.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<section class="single-product mw-80 py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="carousel-container position-relative">
+                    <div id="carousel-custom" class="carousel slide border rounded shadow" data-bs-ride="carousel">
+                        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner border-bottom">
+                                {% for product_image in item.product_image_set.all %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ product_image.image.url }}" class="d-block w-100" alt="Product image" 
+                                        onclick="showImageModal('{{ product_image.image.url }}')">
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container mt-3 position-relative">
+                        <button class="btn btn-dark position-absolute start-0 top-50 translate-middle-y shadow" id="scrollLeft"
+                            style="z-index: 1;width: 20px; height: 95%; display: flex; align-items: center; justify-content: center; border-radius: 0; opacity: 0.5; border: 1px solid #6c757d; transition: opacity 0.3s, background-color 0.3s;">
+                            <span style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"
+                                    fill="white" style="filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.8));">
+                                    <path d="M15.28 5.22a.75.75 0 0 1 0 1.06L9.56 12l5.72 5.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.75.75 0 0 1 1.06 0Z">
+                                    </path>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="d-flex overflow-auto" id="thumbnails" style="gap: 3px; scroll-behavior: smooth;">
+                            {% for product_image in item.product_image_set.all %}
+                            <div class="flex-shrink-0">
+                                <img src="{{ product_image.image.url }}" data-bs-target="#carouselExample"
+                                    data-bs-slide-to="{{ forloop.counter0 }}" class="img-thumbnail thumbnail"
+                                    style="width: 80px; height: 80px; cursor: pointer;"
+                                    alt="Thumbnail {{ forloop.counter }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="btn btn-dark position-absolute end-0 top-50 translate-middle-y shadow"id="scrollRight"style="z-index: 1;width: 20px; height: 95%; display: flex; align-items: center; justify-content: center; border-radius: 0; opacity: 0.5; border: 1px solid #6c757d; transition: opacity 0.3s, background-color 0.3s;">
+                            <span style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="white" style="filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.8));">
+                                    <path d="M8.72 5.22a.75.75 0 0 1 0 1.06L14.44 12l-5.72 5.72a.749.749 0 0 1 .326 1.275.749.749 0 0 1 .734-.215l6.25-6.25a.75.75 0 0 1 0-1.06l-6.25-6.25a.75.75 0 0 1-1.06 0Z"></path>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h2 class="h3 fw-bold">{{ item.name }}</h2>
+                <div class="product-size mt-4">
+                    <span class="fw-bold">選擇尺寸:</span>
+                    <div id="product-size-buttons" class="d-flex flex-wrap gap-2 mt-2">
+                        {% for option in item.options.all %}
+                        <input 
+                                type="radio" class="btn-check" name="options" id="option{{ option.id }}" 
+                                value="{{ option.id }}" data-price="{{ option.price }}" 
+                                autocomplete="off" {% if forloop.first %}checked{% endif %}>
+                        <label class="btn btn-outline-dark rounded" for="option{{ option.id }}">
+                                {{ option.size }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="product-quantity mt-3">
+                    <span class="fw-bold">數量:</span>
+                    <div class="input-group w-auto">
+                        <button class="btn btn-outline-dark" type="button" id="decrement">-</button>
+                        <input type="number" id="product-quantity" class="form-control text-center" value="1" min="1" readonly>
+                        <button class="btn btn-outline-dark" type="button" id="increment">+</button>
+                    </div>
+                </div>
+                <p class="product-price mt-3 fs-4 text-dark" id="product-price">
+                    ${{ item.productoption_set.first.price }}
+                </p>
+                <div class="product-category mt-3">
+                    <span class="fw-bold">商品分類:</span>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="{% url 'products:list' %}?category={{ item.category.id }}"
+                                class="text-decoration-none text-dark">
+                                {{ item.category.name }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="javascript:void(0)" onclick="addToCart({{ item.id }})"class="btn btn-dark w-100 mt-3">加入購物車</a>                
+            </div>
+            <div class="carousel-outer mt-5 border border-dark rounded p-1">
+                <h3 class="mb-3">商品介紹</h3>               
+                <div class="collapse-content" id="collapseContent" style="max-height: 200px; overflow: hidden; transition: max-height 0.3s ease;">
+                    <p>{{ item.description|safe }}</p>
+                </div>               
+                <button id="toggleButton" class="btn btn-outline-primary">
+                    <span id="toggleButtonText">▼ 展開</span>
+                </button>
+            </div>                                
+            <div class='container carousel-inner w-75 my-2'>
+                {% for product_image in item.product_image_set.all %}
+                {% if forloop.counter == 1 %}
+                <div class='item active'>
+                    {% else %}
+                    <div class='item'>
+                        {% endif %}
+                        {% if product_image.image %}
+                        <img class="mb-1 img-fluid shadow-sm rounded hover-effect" src='{{ product_image.image.url }}' alt=''
+                            data-zoom-image="{{ product_image.image.url }}" style="max-width: 100%; height: auto; 
+                                    border: 1px solid rgba(0, 0, 0, 0.1); 
+                                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+                                    transition: transform 0.3s ease, box-shadow 0.3s ease;" />
+                        <div style="clear: both;"></div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">圖片預覽</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <img id="modalImage" src="" alt="Preview Image" class="img-fluid rounded shadow">
+                </div>
+                <div class="mt-3 d-flex flex-wrap justify-content-center gap-2">
+                    {% for product_image in item.product_image_set.all %}
+                    <img src="{{ product_image.image.url }}" class="modal-thumbnail img-thumbnail"
+                        onclick="updateModalImage('{{ product_image.image.url }}')"
+                        style="width: 80px; height: 80px; cursor: pointer;">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'products/js/content-js/detail.js' %}"></script>
+{% endblock content %}

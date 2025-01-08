@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="products section bg-light">   
+    <div class="container-fulid sidebar sticky-top">
+        <div class="category-sidebar">                    
+            <ul class="category-list sidebar-item d-flex flex-wrap justify-content-center py-3">
+                <li>
+                    <a href="{% url 'products:list' %}">所有商品</a>
+                </li>
+                {% for category in categories %}
+                    <li>
+                        <a href="{% url 'products:list' %}?category={{ category.id }}">{{ category.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div> 
+    <div class="container"> 
+        <div class="row">                 
+            <div class="col-md-12 col-12">
+                <div id="imageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <ol class="carousel-indicators">
+                        {% for image in carousel_images %}
+                            <li data-bs-target="#imageCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                                class="{% if forloop.first %}active{% endif %}"></li>
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner pt-3">
+                        {% for image in carousel_images %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ image.image.url }}" alt="{{ image.name }}" class="d-block w-100 img-fluid" style="max-width: 100%; height: auto;">
+                                <div class="carousel-caption d-none d-md-block">    
+                                    <p>{{ image.description }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev custom-control-prev" href="#imageCarousel" role="button" data-bs-slide="prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                            <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                        </svg>
+                    </a>
+                    <a class="carousel-control-next custom-control-next" href="#imageCarousel" role="button" data-bs-slide="next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                            <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                          </svg>
+                    </a>
+                </div>
+                {% for category, items in category_items.items %}
+                    <h3>{{ category.name }}
+                        <a href="{% url 'products:list' %}?category={{ category.id }}" class="btn btn-secondary btn-sm ms-3">查看更多</a>
+                    </h3>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+                        {% for item in items %}
+                            <div class="product-card col mb-4">
+                                <div class="product-item border border-dark rounded ps-0 pe-0">
+                                    <div class="product-thumb">
+                                        {% if item.product_image_set.all.0.image %}
+                                            <a href="{% url 'products:detail' item.id %}">                                            
+                                                <img class="img-responsive rounded" src="{{ item.product_image_set.all.0.image.url }}" alt="product-img" style="height: auto; max-width: 100%;"/>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="product-content border-top mt-2 p-1">
+                                        <h4><a href="{% url 'products:detail' item.id %}">{{ item.name }}</a></h4>
+                                        <p class="product-price">${{ item.lowest_price|floatformat:0 }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

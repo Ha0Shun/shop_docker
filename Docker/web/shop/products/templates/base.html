@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'products/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'products/css/recss.css' %}">
+    <link rel="stylesheet" href="{% static 'products/css/style.css' %}">   
+    <link rel="stylesheet" href="{% static 'products/css/detail.css' %}"> 
+    <link rel="stylesheet" href="{% static 'products/css/bootstrap-reboot.css' %}">
+    <script src="{% static 'products/js/content-js/base.js' %}"></script>  
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'products/images/測試.png' %}">
+    <!-- Themefisher Icon font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'products/plugins/themefisher-font/style.css' %}"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Animate css -->
+    <link rel="stylesheet" href="{% static 'products/plugins/animate/animate.css' %}">
+    <!-- Slick Carousel -->
+    <link rel="stylesheet" href="{% static 'products/plugins/slick/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'products/plugins/slick/slick-theme.css' %}">
+    <!-- Main Stylesheet -->
+    <script src="{% static 'products/js/bootstrap.min.js' %}"></script>    
+    <script src="{% static 'products/js/bootstrap.bundle.min.js' %}"></script> 
+    <!-- Main jQuery -->
+    <script src="{% static 'products/plugins/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'products/plugins/instafeed/instafeed.min.js' %}"></script>
+    <!-- Video Lightbox Plugin -->
+    <script src="{% static 'products/plugins/ekko-lightbox/dist/ekko-lightbox.min.js' %}"></script>
+    <!-- Count Down Js -->
+    <script src="{% static 'products/plugins/syo-timer/build/jquery.syotimer.min.js' %}"></script>
+    <!-- slick Carousel -->
+    <script src="{% static 'products/plugins/slick/slick.min.js' %}"></script>
+    <script src="{% static 'products/plugins/slick/slick-animation.min.js' %}"></script>
+    <!-- Main Js File -->
+    <script src="{% static 'products/js/script.js' %}"></script>
+    <!-- sweetalert2 -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>    
+    <title>測試商城</title>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand logo" href="{% url 'products:home' %}">測試商城</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'products:home' %}">首頁</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'orders:index' %}">訂單查詢</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'orders:cart' %}">購物車</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock content %}
+    <footer class="container-fluid bg-dark text-white pt-2">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0 p-3">
+                    <p class="mb-0">
+                        <strong>&copy;2024 邢皓翔購物網站測試</strong><br>
+                        <span>聯絡方式:
+                            <a href="mailto:shun850211@gmail.com" class="text-white text-decoration-none">
+                                shun850211@gmail.com
+                            </a>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="map-container rounded shadow-sm overflow-hidden">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28918.010644004393!2d121.51552903663651!3d25.042511723944372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442abb6da80a7ad%3A0xacc4d11dc963103c!2z5Y-w5YyXMTAx6LO854mp5Lit5b-D!5e0!3m2!1szh-TW!2stw!4v1732892188185!5m2!1szh-TW!2stw"
+                            width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <p class="mb-0 small text-white">&copy; 2024 所有權利保留。</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
